@@ -129,3 +129,72 @@ class Habitability:
 
         return float(frac.item()), mean, habitable
 
+class SRD:
+    @staticmethod
+    def srd_calc(ds,lat=slice(0,48), grid="all"):
+        """
+        Compute area-weighted incoming shortwave radiation over all grid cells
+        """
+        ds = ds.isel(lat=lat)
+
+        # Incoming shortwave radiation for each grid cell averaged over time
+        srd = ds["srd"].mean("time")
+
+        # Latitude weights
+        lat = srd["lat"]
+        weights = np.cos(np.deg2rad(lat))
+        weights = weights.where(np.isfinite(weights), 0)
+        weights_2d, _ = xr.broadcast(weights, srd)
+
+        if grid == "all":
+            # Numerator: average incoming shortwave radiation over all grid cells
+            num = (srd * weights_2d).sum(dim=["lat", "lon"])
+
+            # Denominator: total area
+            den = (weights_2d).sum(dim=["lat", "lon"])
+            # guard against zero area
+            if float(den) == 0.0:
+                return 0.0
+
+            plot = srd
+
+            return float((num / den).item()), plot
+        
+        elif grid == "land":
+            # Numerator: average incoming shortwave radiation over land grid cells
+            land = ds["lsm"] > 0
+            num = (srd * weights_2d * land).sum(dim=["lat", "lon"])
+
+            # Denominator: total land area
+            den = (weights_2d * land).sum(dim=["lat", "lon"])
+            # guard against zero area
+            if float(den) == 0.0:
+                return 0.0
+            
+            plot = srd * land
+
+            return float((num / den).item()), plot
+    
+        elif grid == "ocean":
+            # Numerator: average incoming shortwave radiation over ocean grid cells
+            ocean = 1.0 - ds["lsm"]
+            num = (srd * weights_2d * ocean).sum(dim=["lat", "lon"])
+
+            # Denominator: total ocean area
+            den = (weights_2d * ocean).sum(dim=["lat", "lon"])
+            # guard against zero area
+            if float(den) == 0.0:
+                return 0.0
+            
+            plot = srd * ocean
+
+            return float((num / den).item()), plot
+        
+        else:
+            raise ValueError("grid must be 'all', 'land', or 'ocean'")
+
+        
+
+
+    
+
