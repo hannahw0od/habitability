@@ -4,7 +4,9 @@ import xarray as xr
 
 class SeaIce:
     @staticmethod
-    def sic_timeseries(ds, lsm):
+    def sic_timeseries(ds, lsm, lat=slice(0,48)):
+
+        ds = ds.isel(lat=lat)
 
         # Mask ice to be over threshold to count towards ice coverage
         ice_present = ds >= 0.15
@@ -31,7 +33,10 @@ class SeaIce:
         return result.values  # Return as numpy array
 
 class WholeGlobeParam:
-    def globalparam_timeseries(ds):
+    def globalparam_timeseries(ds, lat=slice(0,48)):
+
+        ds = ds.isel(lat=lat)
+
         param = ds
 
         # Latitude weights
@@ -52,7 +57,9 @@ class WholeGlobeParam:
         return result.values  # Return as numpy array
 
 class LandParam:
-    def landparam_timeseries(ds, lsm):
+    def landparam_timeseries(ds, lsm, lat=slice(0,48)):
+
+        ds = ds.isel(lat=lat)
 
         # Land mask
         land = lsm
@@ -75,7 +82,9 @@ class LandParam:
         return result.values  # Return as numpy array
 
 class OceanParam:
-    def oceanparam_timeseries(ds, lsm):
+    def oceanparam_timeseries(ds, lsm, lat=slice(0,48)):
+
+        ds = ds.isel(lat=lat)
 
         # Land mask
         land = lsm
