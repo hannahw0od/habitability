@@ -21,7 +21,12 @@ class SeaIceCalc:
         ice_present = sic >= threshold
 
         # Ocean fraction
-        ocean_frac = 1.0 - ds["lsm"]
+        lsm = ds["lsm"]
+        if "time" in lsm.dims:
+            land = (lsm > 0).any("time")
+        else:
+            land = lsm > 0
+        ocean_frac = 1.0 - land
 
         # Latitude weights
         lat = sic["lat"]
@@ -44,6 +49,7 @@ class SeaIceCalc:
         ice_fraction = ice_fraction.item()
 
         plot = sic * ocean_frac
+
         
         return ice_fraction, plot
     
@@ -59,7 +65,12 @@ class SST:
         sst = ds["sst"].mean("time")
 
         # Ocean fraction
-        ocean_frac = 1.0 - ds["lsm"]
+        lsm = ds["lsm"]
+        if "time" in lsm.dims:
+            land = (lsm > 0).any("time")
+        else:
+            land = lsm > 0
+        ocean_frac = 1.0 - land
 
         # Latitude weights
         lat = sst["lat"]
@@ -92,7 +103,13 @@ class Habitability:
 
         # Land mask
         lsm = ds["lsm"]
-        land = lsm > 0
+
+        if "time" in lsm.dims:
+            land = (lsm > 0).any("time")
+        else:
+            land = lsm > 0
+
+        # land = lsm > 0
         # sm = ds["sm"].isel(soil_layer=0)
         # sm_mean = sm.mean("time")
         # land = sm_mean > 1e-6
@@ -120,13 +137,12 @@ class Habitability:
         lat = data.lat
         weights = np.cos(np.deg2rad(lat))
         weights = weights.where(np.isfinite(weights), 0)
-        weights_2d, _ = xr.broadcast(weights, land)
+        weights_2d, _ = xr.broadcast(weights, mean)
 
         # Area weighted fraction
         numerator = (habitable * weights_2d).sum(dim=["lat", "lon"])
         denominator = (land * weights_2d).sum(dim=["lat", "lon"])
         frac = ( numerator / denominator ) * 100
-
         return float(frac.item()), mean, habitable
 
 class SRD:
@@ -162,7 +178,12 @@ class SRD:
         
         elif grid == "land":
             # Numerator: average incoming shortwave radiation over land grid cells
-            land = ds["lsm"] > 0
+            lsm = ds["lsm"]
+            if "time" in lsm.dims:
+                land = (lsm > 0).any("time")
+            else:
+                land = lsm > 0
+
             num = (srd * weights_2d * land).sum(dim=["lat", "lon"])
 
             # Denominator: total land area
@@ -177,7 +198,13 @@ class SRD:
     
         elif grid == "ocean":
             # Numerator: average incoming shortwave radiation over ocean grid cells
-            ocean = 1.0 - ds["lsm"]
+            lsm = ds["lsm"]
+            if "time" in lsm.dims:
+                land = (lsm > 0).any("time")
+            else:
+                land = lsm > 0
+
+            ocean = 1.0 - land
             num = (srd * weights_2d * ocean).sum(dim=["lat", "lon"])
 
             # Denominator: total ocean area
@@ -206,7 +233,10 @@ class Tempdiff:
 
         # Land mask
         lsm = ds["lsm"]
-        land = lsm > 0
+        if "time" in lsm.dims:
+            land = (lsm > 0).any("time")
+        else:
+            land = lsm > 0
 
         # Variable extraction
         if var == "st":

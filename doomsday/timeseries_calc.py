@@ -62,7 +62,7 @@ class LandParam:
         ds = ds.isel(lat=lat)
 
         # Land mask
-        land = lsm
+        land = lsm > 0
 
         # Latitude weights
         lat = ds["lat"]
