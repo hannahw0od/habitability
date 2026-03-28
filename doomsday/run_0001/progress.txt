@@ -1,0 +1,35 @@
+Starting SpeedyWeather.jl run_0001 on Wed, 11 Mar 2026 12:55:55
+Integrating:
+SpectralGrid{Spectrum{...}, OctahedralGaussianGrid{...}}
+├ Number format: Float32
+├ Spectral:      T31 LowerTriangularMatrix
+├ Grid:          48-ring OctahedralGaussianGrid, 3168 grid points
+├ Resolution:    3.61°, 401km (at 6371km radius)
+├ Vertical:      8-layer atmosphere
+└ Architecture:  CPU using Array
+Time: 1825.0 days at Δt = 2400.0s
+
+All data will be stored in /Users/woodh/Documents/rotation_project/habitability/doomsday/run_0001
+
+  5%, ETA: 0:09:37, , 713.39 years/day
+ 10%, ETA: 0:09:02, , 718.10 years/day
+ 15%, ETA: 0:08:34, , 714.37 years/day
+ 20%, ETA: 0:08:07, , 709.75 years/day
+ 25%, ETA: 0:07:40, , 704.67 years/day
+ 30%, ETA: 0:07:11, , 701.20 years/day
+ 35%, ETA: 0:06:41, , 699.68 years/day
+ 40%, ETA: 0:06:12, , 696.54 years/day
+ 45%, ETA: 0:05:42, , 694.23 years/day
+ 50%, ETA: 0:05:12, , 692.12 years/day
+ 55%, ETA: 0:04:42, , 688.96 years/day
+ 60%, ETA: 0:04:10, , 690.85 years/day
+ 65%, ETA: 0:03:39, , 692.01 years/day
+ 70%, ETA: 0:03:08, , 689.89 years/day
+ 75%, ETA: 0:02:36, , 690.59 years/day
+ 80%, ETA: 0:02:05, , 690.00 years/day
+ 85%, ETA: 0:01:34, , 689.27 years/day
+ 90%, ETA: 0:01:03, , 689.48 years/day
+ 95%, ETA: 0:00:31, , 689.60 years/day
+100%, ETA: 0:00:00, , 689.05 years/day
+
+Integration done in 10 minutes, 27 seconds.
